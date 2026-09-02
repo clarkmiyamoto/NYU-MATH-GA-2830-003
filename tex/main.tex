@@ -1,8 +1,180 @@
-\documentclass[11pt]{article}
-\usepackage{graphicx} % Required for inserting images
-\usepackage{amsmath, amssymb, amsthm}
-\usepackage[margin=1in]{geometry}
+%%% Document Formatting
+\documentclass[12pt,fleqn]{article}
+\usepackage[a4paper,
+            bindingoffset=0.2in,
+            left=0.75in,
+            right=0.75in,
+            top=0.8in,
+            bottom=0.8in,
+            footskip=.25in]{geometry}
+\setlength\parindent{10pt}
+
+%%% Imports
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{dsfont}
+\numberwithin{equation}{section}
+\usepackage{mathtools}
+\usepackage{cancel}
+\usepackage{empheq}
+\usepackage{algorithm}
+\usepackage{algpseudocode}  % preamble
+
+% Visualization
+\usepackage{graphicx}
+
+
+%%% Formatting
 \usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={SCSI Lecture Notes},
+    pdfpagemode=FullScreen,
+}
+\urlstyle{same}
+
+%%% Custom Environments
+ 
+
+% theorems
+% Dependencies
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{amsmath, amsfonts, mathtools, amsthm, amssymb}
+\usepackage{thmtools}
+\usepackage[framemethod=TikZ]{mdframed}
+\mdfsetup{skipabove=1em,skipbelow=0em}
+
+\theoremstyle{definition}
+
+
+\makeatother
+\usepackage{thmtools}
+\usepackage[framemethod=TikZ]{mdframed}
+\mdfsetup{skipabove=1em,skipbelow=0em}
+
+
+\theoremstyle{definition}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{ForestGreen!70!black}, bodyfont=\normalfont,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=ForestGreen, backgroundcolor=ForestGreen!5,
+    }
+]{thmgreenbox}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{NavyBlue!70!black}, bodyfont=\normalfont,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=NavyBlue, backgroundcolor=NavyBlue!5,
+    }
+]{thmbluebox}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{NavyBlue!70!black}, bodyfont=\normalfont,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=NavyBlue
+    }
+]{thmblueline}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{RawSienna!70!black}, bodyfont=\normalfont,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=RawSienna, backgroundcolor=RawSienna!5,
+    }
+]{thmredbox}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{RawSienna!70!black}, bodyfont=\normalfont,
+    numbered=no,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=RawSienna, backgroundcolor=RawSienna!1,
+    },
+    qed=\qedsymbol
+]{thmproofbox}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{NavyBlue!70!black}, bodyfont=\normalfont,
+    numbered=no,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=NavyBlue, backgroundcolor=NavyBlue!1,
+    },
+]{thmexplanationbox}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{Plum!70!black}, bodyfont=\normalfont,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=Plum, backgroundcolor=Plum!5,
+    }
+]{thmpurplebox}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{Sepia!70!black}, bodyfont=\normalfont,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=Sepia, backgroundcolor=Sepia!5,
+    }
+]{thmsepiabox}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{ForestGreen!70!black}, bodyfont=\normalfont,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=ForestGreen
+    }
+]{thmgreenline}
+
+% \declaretheoremstyle[headfont=\bfseries, bodyfont=\normalfont, mdframed={ nobreak } ]{thmgreenbox}
+% \declaretheoremstyle[headfont=\bfseries, bodyfont=\normalfont, mdframed={ nobreak } ]{thmredbox}
+% \declaretheoremstyle[headfont=\bfseries, bodyfont=\normalfont]{thmbluebox}
+% \declaretheoremstyle[headfont=\bfseries, bodyfont=\normalfont]{thmblueline}
+% \declaretheoremstyle[headfont=\bfseries, bodyfont=\normalfont, numbered=no, mdframed={ rightline=false, topline=false, bottomline=false, }, qed=\qedsymbol ]{thmproofbox}
+% \declaretheoremstyle[headfont=\bfseries, bodyfont=\normalfont, numbered=no, mdframed={ nobreak, rightline=false, topline=false, bottomline=false } ]{thmexplanationbox}
+
+\declaretheorem[style=thmgreenbox, name=Definition]{definition}
+\declaretheorem[style=thmgreenbox, name=Assumption]{assumption}
+\declaretheorem[style=thmbluebox, numbered=no, name=Example]{eg}
+\declaretheorem[style=thmredbox, name=Proposition]{prop}
+\declaretheorem[style=thmredbox, name=Theorem]{theorem}
+\declaretheorem[style=thmredbox, name=Lemma]{lemma}
+\declaretheorem[style=thmredbox, numbered=no, name=Corollary]{corollary}
+\declaretheorem[style=thmpurplebox, name=Problem]{problem}
+\declaretheorem[style=thmsepiabox, numbered=no, name=Fact]{fact}
+\declaretheorem[style=thmgreenline, name=Property]{property}
+
+\declaretheorem[style=thmproofbox, name=Proof]{replacementproof}
+\renewenvironment{proof}[1][\proofname]{\vspace{-10pt}\begin{replacementproof}}{\end{replacementproof}}
+
+
+\declaretheorem[style=thmexplanationbox, name=Proof]{tmpexplanation}
+\newenvironment{explanation}[1][]{\vspace{-10pt}\begin{tmpexplanation}}{\end{tmpexplanation}}
+
+\declaretheorem[style=thmblueline, numbered=no, name=Remark]{remark}
+\declaretheorem[style=thmblueline, numbered=no, name=Note]{note}
+
+\newmdenv[ 
+  topline=false,
+  bottomline=false,
+  skipabove=\topsep,
+  skipbelow=\topsep
+]{sidework}
 
 \title{Mathematical Modeling with Data \\[0.3em]
        \large NYU MATH-GA 2830-003 --- Andrew Stuart --- Fall 2026}
@@ -13,6 +185,194 @@
 
 \maketitle
 
+\begin{abstract}
+	We allow a modified version of \url{https://arxiv.org/abs/2410.10523}. The purpose of this course is solve inverse problems (and a subclass of said problems, data assimilation).
+\end{abstract}
+Outline of Schedule
+\begin{enumerate}
+	\item Lectures 1-6: Formalism \& Recap of Machine Learning.
+	\item Lectures 7-10: Theory of inverse problems / problem statement.
+	\item Then technqiues on sovling inverse problems / data assimilation using ML / classical techniques.
+	\item Stating LLMs \& Contrastive Learning in this framework.
+\end{enumerate}
+Prof. Stuart will present/emphasize the material slightly different than the lecture notes.
+
+\tableofcontents
+
+\newpage
+
 \section{Introduction}
+Let $\rho,\rho' \in \mathcal P(\mathbb R^d)$ and $u , v, w \in \mathbb R^d$. To simplify our lives, we'll mainly work with measure which emit probability density functions (pdfs) $\left\{ \rho \in L^1(\mathbb R^d; [0,\infty)) : \int \rho = 1 \right\} \subset \mathcal P(\mathbb R^d)$.
+
+\paragraph{Metric Spaces for Probability Distributions} 
+We'll be focusing on ways to assess distances between probability distributions. We'll go over (1) KL-divergence, important in theory \& algorithmically (2) Hellinger metric (3) Energy distance.
+
+\begin{definition}[Negative Log Likelihood]
+	Consider the function $\textsf{LS}: \mathcal P(\mathbb R^d) \times \mathbb R^d \to [-\infty, \infty]$,
+\begin{align}
+	\textsf{LS}(\rho, v) = - \log \rho(v)
+\end{align}
+The notation is because this will becomes a \emph{\textsf{S}coring rule}.
+\end{definition}
+Intuitively, the smaller this is, the more likely $v \sim \rho$, and vice versa. However note, in high-dimensions this might not be the case (think typical set).
+
+\begin{definition}
+	[KL Divergence] Consider the function $\textsf{KL}: \mathcal P(\mathbb R^d) \times \mathcal P(\mathbb R^d) \to [0, \infty]$
+	\begin{align}
+		\textsf{KL}(\rho\ \| \rho) = \mathbb E_{u \sim \rho'} \left[ \log \frac{\rho'(u)}{\rho(u)} \right] = \mathbb E_{u \sim \rho'} \textsf{LS}(\rho, u) - \mathbb E_{u \sim \rho'} \textsf{LS}(\rho', u)
+	\end{align}
+\end{definition}
+Properties
+\begin{enumerate}
+	\item (Non-negative) $\textsf{KL} \geq 0$.
+	\item (Identifiable (?)) $\textsf{KL}(\rho \| \rho') = 0 \iff \rho = \rho'$.
+\end{enumerate}
+\begin{proof} 
+	\begin{align}
+		\textsf{KL}(\rho' \| \rho) & = - \mathbb E_{\rho'} \log \frac{\rho}{\rho'}\\
+		& \geq - \log \mathbb E_{\rho'} \frac{\rho}{\rho'} & \text{Jensen}\\
+		& = - \log 1 = 0
+	\end{align}
+	Further more, because $\log x$ strictly convex, you only get equality i.f.f. $\rho'(u)/\rho(u) = 1$ (almost everywhere).
+\end{proof}
+
+\begin{definition}
+	[Scoring Rule] Let $s: \mathcal P(\mathbb R^d) \times \mathbb R^d \to \mathbb R$ is a \textbf{scoring rule}, intuitively it will determine the "quality" of sample drawn from an associated measure. The \textbf{expected scoring rule} is a function $\bar s : \mathcal P(\mathbb R^d) \times \mathcal P(\mathbb R^d) \to \mathbb R^d$ given by $\bar s(\rho, \rho') = \mathbb E_{u \sim \rho'}s(\rho, u)$.
+\end{definition}
+So for example, an expected scoring rule is the KL-divergence. Expected scoring rules are nice in machine learning because you can estimate $\mathbb E_{u \sim \rho'}$ numerically.
+
+\begin{definition}
+	[Proper Scoring Rule] An expected scoring rule is \textbf{proper} if
+	\begin{align}
+		\bar s(\rho', \rho') \leq \bar s(\rho, \rho'), \quad \forall \rho,\rho' \in \mathcal P(\mathbb R^d)
+	\end{align}
+	It is \textbf{strictly proper} if $\bar s(\rho', \rho') = \bar s(\rho, \rho') \iff \rho = \rho'$
+\end{definition}
+
+
+Let $\rho \in \mathcal P(\mathbb R)$ (yes, 1 dimension).
+\begin{definition}
+	[Cumulative Distribution Function (CDF)] 
+	\begin{align}
+		F_\rho(u) := \int_{-\infty}^u \rho(w) \, dw
+	\end{align}
+\end{definition}
+\begin{eg}
+	Let $\rho = \textsf{Unif}[0,1]$. Then $F_\rho(u) = \begin{cases}
+		0 & u <0\\
+		u& u \in [0, 1)\\
+		1 & u \geq 1
+	\end{cases}$
+\end{eg}
+\begin{eg}
+	Let $\rho = \delta_v$, then $F_\rho(u) = \begin{cases}
+		0& u < v\\
+		1 & u \geq v
+	\end{cases} = \mathds 1_{u \geq v}$. Where $\mathds 1$ is the indicator function.
+\end{eg}
+
+\begin{definition}
+	[Continuous Rank Probability Score] Let $\rho \in \mathcal P(\mathbb R)$ and $v \in \mathbb R$.
+	\begin{align}
+		\textsf{CRPS}(\rho, v) = \| F_\rho(\cdot) - \mathds 1_{\cdot \geq v}\|^2_{L^2(\mathbb R)}
+	\end{align}
+	This has been used in weather forecasting, where $v$ is measurements of pressure, velocity, etc. at a single weather station.
+\end{definition}
+Notice this is indeed a scoring rule.
+\begin{definition}
+	[Quantile Score] Let $q_\rho: (0,1) \to \mathbb R$, defined by $F_\rho(q_\rho(\alpha)) = \alpha$ ($\forall \alpha \in (0,1)$). 
+\end{definition}
+So $q_\rho$ is essentially the inverse of the CDF $F_\rho$; note, the CDF isn't always invertible. For example, when the CDF is flat or has infinite slope, its inverse is not unique. To break this degeneracy, we'll take the inverse which is intuitive via flipping \& rotation the function graphically.
+\begin{eg} 	\begin{enumerate}
+		\item $\rho = \textsf{Unif}[0,1]$, then $q_\rho(\alpha) = \alpha$
+		\item $\rho = \delta_v$, then $q_\rho(\alpha) = v$
+	\end{enumerate}
+	Notice $\alpha \in (0,1)$.
+\end{eg}
+
+\begin{definition}
+	Let
+	\begin{align}
+		h_\alpha(u) = \begin{cases}
+			(1-\alpha) |u|, & u < 0\\
+			\alpha |u|, & u \geq 0
+		\end{cases}
+	\end{align}
+\end{definition}
+\begin{lemma}
+	Let $L_{\alpha, \rho}(\theta) = \mathbb E_{v \sim \rho} [h_\alpha(v - \theta)]$. Then $q_\rho(\alpha) = \arg \min_{\theta \in \mathbb R} L_{\alpha, \rho}(\theta)$. Where $q_\rho$ is the quantile.
+\end{lemma}
+\begin{definition}
+	[Quantile Score] A quantile score at level $\alpha$ if
+	\begin{align}
+		\textsf{QS}_\alpha(\rho, v) = h_\alpha(v - q_\rho(\alpha))
+	\end{align}
+	The expected quantile score is
+	\begin{align}
+		\bar{\textsf{QS}}_\alpha(\rho, \rho') = \mathbb E_{v \sim \rho'} h_\alpha(v - q_\rho(\alpha))
+	\end{align}
+\end{definition}
+\begin{lemma}
+	$\textsf{QS}_\alpha$ is a proper scoring rule.
+\end{lemma}
+
+\begin{theorem}
+	\begin{align}
+		\textsf{CRPS}(\rho, v) = 2 \int_0^1 \textsf{QS}_\alpha(\rho, v) \, d\alpha
+	\end{align}
+\end{theorem}
+
+
+
+Continuing the example, the KL-divergence a strictly proper expected scoring rule. Generalizing our KL divergence, it seems we can define a divergence using strictly proper expected scoring rules $\bar s$.
+\begin{align}
+	D(\rho' \| \rho) = \bar s(\rho, \rho') - \bar s(\rho', \rho')
+\end{align}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+hi
+
+
 
 \end{document}
