@@ -1,5 +1,5 @@
 %%% Document Formatting
-\documentclass[12pt,fleqn]{article}
+\documentclass[11pt,fleqn]{article}
 \usepackage[a4paper,
             bindingoffset=0.2in,
             left=0.75in,
@@ -185,10 +185,7 @@
 
 \maketitle
 
-\begin{abstract}
-	We allow a modified version of \url{https://arxiv.org/abs/2410.10523}. The purpose of this course is solve inverse problems (and a subclass of said problems, data assimilation).
-\end{abstract}
-Outline of Schedule
+We follow a modified version of \url{https://arxiv.org/abs/2410.10523}. The purpose of this course is solve inverse problems (and a subclass of said problems, data assimilation). Our schedule is:
 \begin{enumerate}
 	\item Lectures 1-6: Formalism \& Recap of Machine Learning.
 	\item Lectures 7-10: Theory of inverse problems / problem statement.
@@ -202,6 +199,8 @@ Prof. Stuart will present/emphasize the material slightly different than the lec
 \newpage
 
 \section{Introduction}
+
+\subsection{Scoring Rules}
 Let $\rho,\rho' \in \mathcal P(\mathbb R^d)$ and $u , v, w \in \mathbb R^d$. To simplify our lives, we'll mainly work with measure which emit probability density functions (pdfs) $\left\{ \rho \in L^1(\mathbb R^d; [0,\infty)) : \int \rho = 1 \right\} \subset \mathcal P(\mathbb R^d)$.
 
 \paragraph{Metric Spaces for Probability Distributions} 
@@ -238,7 +237,12 @@ Properties
 
 \begin{definition}
 	[Scoring Rule] Let $s: \mathcal P(\mathbb R^d) \times \mathbb R^d \to \mathbb R$ is a \textbf{scoring rule}, intuitively it will determine the "quality" of sample drawn from an associated measure. The \textbf{expected scoring rule} is a function $\bar s : \mathcal P(\mathbb R^d) \times \mathcal P(\mathbb R^d) \to \mathbb R^d$ given by $\bar s(\rho, \rho') = \mathbb E_{u \sim \rho'}s(\rho, u)$.
+	\\
+	\\
+	The notation $\bar s$ comes from averaging (bar operator) over the argument $s(\rho, \cdot)$.
 \end{definition}
+
+
 So for example, an expected scoring rule is the KL-divergence. Expected scoring rules are nice in machine learning because you can estimate $\mathbb E_{u \sim \rho'}$ numerically.
 
 \begin{definition}
@@ -322,17 +326,145 @@ So $q_\rho$ is essentially the inverse of the CDF $F_\rho$; note, the CDF isn't 
 	\end{align}
 \end{theorem}
 
+\subsection{Divergence}
+\begin{definition}
+	[Divergence] Let $D : \mathcal P(\mathbb R^d) \times \mathcal P(\mathbb R^d) \to \mathbb R$ denote a \emph{(statistical) divergence}, if 
+	\begin{itemize}
+		\item $D(\rho_1 \| \rho_2) \geq 0$ 
+		\item $D(\rho_1 \| \rho_2) = 0 \iff \rho_1 = \rho_2$
+	\end{itemize}
+	In contrast to a metric, it is not symmetric in its arguments. Notice all distances are also divergences.
+\end{definition}
+\begin{theorem}
+	If $s$ is a strictly proper scoring rule, then $D_s(\rho_1, \rho_2)$ is a divergence. In particular
+	\begin{align}
+		D_s(\rho_1 \| \rho_2) = \bar s(\rho, \rho') - \bar s(\rho' , \rho')
+	\end{align}
+\end{theorem}
+\begin{eg}
+	Let $s(\rho, v) = - \log \rho(v)$ which is strictly proper. This corresponds to divergence $D_{KL} (\cdot \| \cdot)$.
+\end{eg}
 
+\begin{definition}
+	Let $f: [0, \infty) \to (-\infty, \infty]$ be a convex function, and $f(0) = \lim_{t \to 0^+} f(t)$. Then the $f$-divergence is 
+	\begin{align}
+		D_f(\rho_1 \| \rho_2) = \mathbb E_{u \sim \rho_2} f \left( \frac{\rho_1(u)}{\rho_2(u)} \right)
+	\end{align}
+\end{definition}
+\begin{theorem}
+	Let $f$ be a strictly convex function, then $D_f(\cdot \| \cdot)$ is indeed a divergence.
+\end{theorem}
+\begin{proof}
+	Showing $\geq 0$
+	\begin{align}
+		D_f(\rho_1 \| \rho_2) & = \mathbb E_{\rho_2} \left[ f \left( \frac{\rho_1(u)}{\rho_2(u)} \right) \right]\\ 
+		& \geq f \left( \mathbb E_{\rho_2} \left[ \frac{\rho_1}{\rho_2} \right] \right) & \text{Jensen}\\
+		& = f(0) & \rho_2 \text{ cancel} \\
+		& = 0 & \text{Definition of } f
+	\end{align}
+	Now showing $\rho_1 = \rho_2 \iff D_f = 0$. Proving $\implies$ is trivial. Now doing the other way
+\end{proof}
+Note, $\textsf{TV}$ distance is also a divergence, but the choice of $f(t) = \frac{1}{2} | t-  1|$ is not strictly convex. Hence why he defined $f$-divergences to just be convex functions.
 
-Continuing the example, the KL-divergence a strictly proper expected scoring rule. Generalizing our KL divergence, it seems we can define a divergence using strictly proper expected scoring rules $\bar s$.
-\begin{align}
-	D(\rho' \| \rho) = \bar s(\rho, \rho') - \bar s(\rho', \rho')
-\end{align}
+\begin{eg}
+	$f(t) = t \log t$ corresponds to the $\textsf{KL}$ divergence. You can also get the reverse $\textsf{KL}$ by using $f(t) = - \log t$. \\
+	\\
+	Another divergence is $f(t) = (t-1)^2$ which corresponds to $\chi^2$.
+\end{eg}
 
+\begin{definition}
+	[Metric] A metric $D$ is a divergence which fits two additional criteria. Let $\rho_1, \rho_2, \rho_3 \in \mathcal P(\mathbb R^d)$.
+	\begin{enumerate}
+		\item Triangle inequality: $D(\rho_1, \rho_3) \leq  D(\rho_1 , \rho_2) + D(\rho_2, \rho_3)$
+		\item Symmetric: $D(\rho_1, \rho_2) = D(\rho_2, \rho_2)$
+	\end{enumerate}
+\end{definition}
+Why not define these using norms? Well probability densities don't form a vector space.
 
+\begin{definition}
+	[Energy Score] For $\beta \in (0, 2]$
+	\begin{align}
+		\textsf{ES}_\beta(\rho, v) = \mathbb E_{u \sim \rho} |u - v|^\beta - \frac{1}{2} \mathbb E_{(a, a') \sim \rho \otimes \rho} |a -a'|^\beta
+	\end{align}
+	where $(a, a') \sim \rho \otimes \rho$ means $a,a'$ are drawn iid from the same distribution $\rho$. The divergence corresponding to the energy score is given by
+	\begin{align}
+		D^2_{E, \beta}(\rho_1, \rho_2) : = \bar{\textsf{ES}}_{\beta}(\rho, \rho') -  \bar{\textsf{ES}}_{\beta}(\rho', \rho') = \mathbb E_{u,v} |u - v|^\beta - \frac{1}{2} \mathbb E_{u,u'} |u- u'|^\beta - \frac{1}{2} \mathbb E_{v,v'} |v - v'
+	|^\beta
+	\end{align}
+	where all expectations are taken over $\rho \otimes \rho$. 
+\end{definition}
+In this class, we'll typically take $\beta = 1$.
+Interestingly this divergence gets sweetened into a norm (over characteristic functions).
+\begin{theorem}
+	Let $\rho_1, \rho_2 \in \mathcal P(\mathbb R^d)$ and $\beta \in (0,2)$. Then $\exists \,  C = C(\beta, d)$  (this constant blows up as $\beta \to 2$)
+	\begin{align}
+		\frac{1}{2} D^2_{E, \beta}(\rho_1, \rho_2) = C \int_{\mathbb R^d} \frac{| \varphi_\rho(u) - \varphi_{\rho'}(u)|^2}{|u|^{d + \beta}} du
+	\end{align}
+	where $\varphi_\rho$ is the characteristic function of $\rho$. This is an L2 norm over characteristic functions.  Therefore $\frac{1}{2}D^2_{E, \beta}$ is a divergence, and $D_{E, \beta}$ is a metric.
+\end{theorem}
+\begin{proof}
+	Proof is magical. Andrew doesn't go over it in class.
+\end{proof}
 
+\begin{sidework}
+	Notation: $\textsf{ES}(\rho, v)$ = $\textsf{ES}_1(\rho, v)$. \\
+	\\
+	Recall: $\textsf{CPRS}(\rho, v) = \int |F_\rho(z) - \mathds 1_{z \geq v}(z) |^2 \, dz$, where $F_\rho$ is the cumulative function corresponding to $\rho$. This measures how far your deviate from $\rho = \delta_v$.
+\end{sidework}
 
+\begin{theorem}
+	In $d = 1$, $\textsf{CRPS} = \textsf{ES}$.
+\end{theorem}
+\begin{proof}
+	 First note
+	 \begin{align}
+	 	|u-v| = \int_v^\infty \mathds 1_{z \leq u} \, dz + \int_{-\infty}^v \mathds 1_{z > u} \, dz
+	 \end{align}
+	 By Fubini
+	 \begin{align}
+	 	\mathbb E_{u \sim \rho}|u-v| & =  \int \rho(u) |u-v|\ , du\\
+	 	& = \int \rho(u) \left( \int_v^\infty \mathds 1_{z \leq u} \, dz + \int_{-\infty}^v \mathds 1_{z > u} \, dz \right)\\
+	 	& = \int_v^\infty [1 - F_\rho(z)] \, dz + \int_{-\infty}^u F_\rho(z) \, dz\\
+	 	& = \int_{\mathbb R} [1-F_\rho(z)] \mathds 1_{z \geq v} + F_\rho(z) \underbrace{\mathds 1_{z < v}}_{1 - \mathds 1_{z \geq v}} \, dz
+	 \end{align}
+	 Ok, now we can integrate
+	 \begin{align}
+	 	\frac{1}{2}\mathbb E_{(u,v) \sim \rho^{\otimes 2}} |u-v| = \int [1-F_\rho(z)] \, F_\rho(z) \, dz
+	 \end{align}
+	 Putting it all together
+	 \begin{align}
+	 	\textsf{ES}(\rho, v) & = \mathbb E_{u \sim \rho} |u -v| - \frac{1}{2} \mathbb E_{u,u' \sim \rho^{\otimes 2}}  |u - u'|\\
+	 	& = \int_{\mathbb R} [F_\rho(z)^2 - 2 F_\rho(z) \mathds 1_{z \geq v} + \mathds 1_{z \geq v}^2] \, dz\\
+	 	& = \int_{\mathbb R} [F_\rho(z) - \mathds 1_{z \geq v}]^2 \,dz = \textsf{CRPS}(\rho, v)
+	 \end{align}
+\end{proof}
 
+\begin{definition}
+	Let $\rho, \rho' \in \mathcal P(\mathbb R^d)$ be probability density functions. For $1 \leq p < \infty$, define the metric
+	\begin{align}
+		D_p(\rho, \rho')^p & = \frac{1}{2^{1/p}} \int |\rho(u)^{1/p} - \rho'(u)^{1/p}|^p \, du\\
+		 & = \| |\rho|^{1/p} - |\rho'|^{1/p}\|_{L^p}^p
+	\end{align}
+\end{definition}
+\begin{eg}
+	$p=1$ is TV distance, and $p=2$ is the Hellinger Metric.
+\end{eg}
+
+\begin{theorem}
+	For $p \in (1, \infty)$, there exists $K = K(p)$, such that
+	\begin{align}
+		\frac{1}{K}D_1(\rho,\rho') \leq D_p (\rho, \rho') \leq D_1(\rho, \rho')^{1/p}
+	\end{align}
+\end{theorem}
+\begin{proof}
+	Homework.
+\end{proof}
+
+\begin{eg}
+	If $\textsf{TV} = \mathcal O(\epsilon)$ (which is $p=1$), then this implies $D_{Hell} = \mathcal O(\epsilon^{1/2})$.\\
+	\\
+	If $D_{Hell} = \mathcal O(\epsilon)$, then this implies $D_{TV}= \mathcal O(\epsilon)$. Meaning the Hellinger metric is much stronger than the TV distance.
+\end{eg}
 
 
 
