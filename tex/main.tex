@@ -466,6 +466,148 @@ Interestingly this divergence gets sweetened into a norm (over characteristic fu
 	If $D_{Hell} = \mathcal O(\epsilon)$, then this implies $D_{TV}= \mathcal O(\epsilon)$. Meaning the Hellinger metric is much stronger than the TV distance.
 \end{eg}
 
+\newpage
+\section{Transport}
+ 
+\begin{definition}
+	[Pushforward] Let $p \in \mathcal P(\mathbb R^d)$ and $p' \in \mathcal P(\mathbb R^{d'})$, and $T : \mathbb R^d \to \mathbb R^{d'}$. The notation $p' = T_\# p$   (called the pushforward) means
+	\begin{itemize}
+		\item If $x \sim p$ then $T(x) \sim p'$
+		\item $\forall$ bounded \& measurable $\phi: \mathbb R^d \to \mathbb R$
+		\begin{align}
+			\int \phi(y) p'(y) \, dy = \int \phi(y) (T_\# p)(y) \, dy = \int \phi(T(x)) p(x) \,dx
+		\end{align}
+	\end{itemize}
+\end{definition}
+
+\paragraph{Transport Metrics}
+\begin{definition}
+	[Coupling] Let $p \in \mathcal P(\mathbb R^d)$ and $p' \in \mathcal P(\mathbb R^{d'})$. Let $\pi \in \mathcal P(\mathbb R^d \times \mathbb R^d)$ is a \textbf{coupling} of $p, p'$ if it has the specified marginals
+	\begin{align}
+		\int \pi(u,v) \, dv = p(u), \quad \int \pi(u,v) \, du = p'(v)
+	\end{align}
+	We'll denote $\Pi_{p,p'} = \left\{ \text{set of all couplings of } p,p' \right\}$.
+\end{definition}
+
+\begin{definition}
+	[Kantorovich Formulation of Optimal Transport] Specify a cost function $c: \mathbb R^d \times \mathbb R^d \to \mathbb R_{\geq 0}$.
+	\begin{align}
+		\left\{ \pi^* \in \arg \min_{\pi \in \Pi_{p,p'}} \int_{\mathbb R^d \times \mathbb R^d} c(u,v) \pi(u,v) \, du \, dv \right\}
+	\end{align}
+\end{definition}
+\begin{eg}
+	Take $c(u,v) = |u-v|^2$
+\end{eg}
+\begin{remark}
+	When you're trying to find the optimal transport between two atomic measures, this is a linear programming problem.\\
+	\\
+	To see this, map $c \mapsto \textsf{c}, \pi \mapsto \textsf{P}$ and $p,p' \mapsto \textsf{p,p'}$. You can now see the Kantorovich problem as
+	\begin{align}
+		&\inf_{\textsf{P}} \langle \textsf{c},\textsf{P}\rangle\\
+		& \text{subject to } \textsf{P} \mathds 1 = \textsf{p}, \text{ and } \mathds 1^T \textsf{P} = \textsf{p'}
+	\end{align}
+	So $\mathds 1$ is equivalent to the marginalization operator in function space.
+\end{remark}
+
+\begin{definition} [Wasserstein-2 Distance/Metric]
+	\begin{align} 
+		W_2(p,p')^2 = \inf_{\pi \in \Pi_{p,p'}} \int |u-v|^2 \pi(u,v) \, du \, dv
+	\end{align}
+\end{definition}
+This is a true metric (always $\geq 0$, $=0$ if and only if arguments are equal, symmetric, and satisfies triangle inequality).
+
+
+\begin{definition}
+	[Monge Formulation of Optimal Transport] Let $g : \mathbb R^d \to \mathbb R^d$. The Monge problme is to find a coupling $\pi \in \Pi_{p,p}$ s.t. $\pi = (\textsf{id}, g)_\# p$. We'll denote the solution space as $\Pi^{\textsf{Monge}}_{p,p'}$.
+	\\
+	\\
+	The notation $(\textsf{id}, g): \mathbb R^d \to \mathbb R^d \times \mathbb R^d$.
+\end{definition}
+
+\begin{eg}
+	Consider $y = g(x) + \eta$ where $x \sim p, \eta \sim \mathcal N(0, \Sigma)$ (s.t. $x \perp \eta$). Then
+	\begin{align}
+		y \sim p' = (g_\# p) * \mathcal N(0, \Sigma)
+	\end{align}
+\end{eg}
+\begin{lemma}
+	If $\pi \in \Pi_{p,p'}^{\textsf{Monge}}$, then 
+	\begin{enumerate}
+		\item $\pi(u,v) = p(u) \times \delta_{g(u)}(v)$
+		\item $p' = g_\# p$.
+	\end{enumerate}
+\end{lemma}
+\begin{proof}
+	Let $\Omega = \mathbb R^d \times \mathbb R^d$. 
+	\begin{enumerate}
+		\item \emph{We want to show} $\forall$ bounded \& measurable $\psi : \Omega \to \mathbb R$
+	\begin{align}
+		\int \psi(u,v) p(u) \delta_{g(u)}(v) du\, dv = \int \psi(u,v) \left( (\textsf{id}, g)_\# p \right) (u,v) \, du \, dv
+	\end{align}
+	\emph{Starting proof} from the LHS
+	\begin{align}
+		\textsf{LHS} & = \int \left( \int \psi(u,v) \delta_{g(u)}(v) \, dv \right) p(u) \, du & \text{Boundedness}\\
+		& = \int \psi(u, g(u)) p(u) \, du & \text{Evaluate } \delta_{g(u)}(v)\\
+		& = \textsf{RHS} & \text{Definition of pushforward}
+	\end{align}
+	Here we've made an assumption that $g$ doesn't take multiple values / doesn't have multiple roots; to make the proof simpler. In real life, measures which atomic will have splitting.
+	
+	\item \emph{We want to show} $\forall$ bounded \& measurable $\psi: \mathbb R^d \to \mathbb R$.
+	\begin{align}
+		\int \psi(v) p'(v) \, dv = \int \psi(v) (g_\#p)(v) \, dv
+	\end{align}
+	\emph{Starting proof} from the LHS
+	\begin{align}
+		\textsf{LHS} & = \int_{\mathbb R^d} \psi(v) \left[ \int_{\mathbb R^d} \pi(u,v) \, du \right] \, dv & \text{Existance of coupling}\\
+		& = \int_{\Omega} \psi(v) \, p(u) \delta_{g(u)}(v) \, du \, dv & \text{previous property}\\
+		& = \int_{\mathbb R^d} \psi(g(u)) \, p(u) \, du & \text{Evaluate } \delta_{g(u)}(v)\\
+		& = \textsf{RHS} & \text{Def of pushforward}
+	\end{align}
+	\end{enumerate}
+\end{proof}
+
+\begin{theorem}
+	If $c(u,v) = |u-v|^2$ and $p \in L^1(\mathbb R^d; \mathbb R)$ and $p,p' \in \mathcal P_2(\mathbb R^d) = \left\{ \text{has second moments} \right\}$. Then the Monge problem has a \emph{unique minimizer} $g^*$ and the Kantorovich Formulation has a \emph{unique minimizer} $\pi^* = (\textsf{id}, g^*)_\# p$.
+\end{theorem}
+
+\begin{eg}
+	Let's compute the optimal transport map between two Gaussians $p_i = \mathcal N(m_i, \Sigma_i) \in \mathcal P(\mathbb R^d)$.Assuming $\Sigma_1$ is invertible.
+	
+	Ansatz the affine map $g(u) = Au+b$ which enables pushforward $p_2 = g_\# p_1$. So we can identify the coefficients of the affine map by computing sufficient statistics. First the mean
+	\begin{align}
+		m_2 = \mathbb E_{u \sim p_1} [g(u)] = A m_1 + b \implies b = m_2 - A m_1
+	\end{align}
+	meaning $g(u) = A(u - m_1) + m_2$. Now we can do the covariance
+	\begin{align}
+		\Sigma_2 & = \mathbb E_{u \sim p_1} [(g(u) - m_2)(g(u) - m_2)^T]\\
+		& = A \mathbb E_{u \sim p_1}[(u - m_1)(u- m_1)^T]A^T\\
+		& = A \Sigma_1 A^T
+	\end{align}
+	To find the solution, make the ansatz $A = \Sigma_2^{1/2} Q \Sigma_1^{-1/2}$ (this implies $Q \in \textsf{SO}(d)$). \textbf{The rest of the proof is homework}
+	
+	I'll denote the family of affine maps as
+	\begin{align}
+		g_Q(u) = m_2 + \Sigma_2^{1/2} Q \Sigma_1^{-1/2} (u- m_1)
+	\end{align}
+\end{eg}
+\begin{align}
+	W_2(p_1,p_2)^2 & = \int_{\mathbb R^d} |u- g^*(u)|^2 \, p_1(u) \, du\\
+& \leq \int_{\mathbb R^d} |u - g_{\mathbb I}(u)|^2 p_1(u) \, du & \text{Suboptimal map}\\
+& = \mathbb E_{u \sim p_1} |u - g_{\mathbb I}(u)|^2\\
+& = |m_1 - m_2|^2 + \mathbb E_{u \sim p_1}|S(u - m_1)|^2\\
+& = |m_1 - m_2|^2 + \mathbb E_{u \sim p_1} \text{Tr} \left( S(u-m_1) (u-m_1)^T S^T \right)\\
+& = |m_1 - m_2|^2 + \text{Tr}(S \Sigma_1 S^T) & [\text{Trace}, \mathbb E] = 0\\
+& = |m_1 - m_2|^2 + \text{Tr}\left( [\mathbb I - \Sigma_2^{1/2} \Sigma_2^{-1/2}][\Sigma_1 - \Sigma_1^{1/2} \Sigma_2^{1/2}] \right)\\
+& = |m_1 - m_2|^2 + \text{Tr} \left( \Sigma_1 + \Sigma_2 \right) - 2 \text{Tr}(\Sigma_1^{1/2} \Sigma_2^{1/2})
+\end{align}
+\begin{remark}
+	If $d=1$. Let $m_1= v, \Sigma_1 = 0$ and $m_2 = m, \Sigma_2 = \sigma^2$. Then
+	\begin{align}
+		W_2^2(p_1, p_2) \leq |v - m|^2 + \sigma^2
+	\end{align}
+	So now we can make sensible distance measures between atomic measures \& full support measures. Which was failed by the $\textsf{KL}$ and $\textsf{TV}$.
+\end{remark}
+
 
 
 
