@@ -1,0 +1,303 @@
+%%% Document Formatting
+\documentclass[11pt,fleqn]{article}
+\usepackage[a4paper,
+            bindingoffset=0.2in,
+            left=0.75in,
+            right=0.75in,
+            top=0.8in,
+            bottom=0.8in,
+            footskip=.25in]{geometry}
+\setlength\parindent{10pt}
+
+%%% Imports
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{dsfont}
+\numberwithin{equation}{section}
+\usepackage{mathtools}
+\usepackage{cancel}
+\usepackage{empheq}
+\usepackage{algorithm}
+\usepackage{algpseudocode}  % preamble
+
+% Visualization
+\usepackage{graphicx}
+
+
+%%% Formatting
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={SCSI Lecture Notes},
+    pdfpagemode=FullScreen,
+}
+\urlstyle{same}
+
+%%% Custom Environments
+ 
+
+% theorems
+% Dependencies
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{amsmath, amsfonts, mathtools, amsthm, amssymb}
+\usepackage{thmtools}
+\usepackage[framemethod=TikZ]{mdframed}
+\mdfsetup{skipabove=1em,skipbelow=0em}
+
+\theoremstyle{definition}
+
+
+\makeatother
+\usepackage{thmtools}
+\usepackage[framemethod=TikZ]{mdframed}
+\mdfsetup{skipabove=1em,skipbelow=0em}
+
+
+\theoremstyle{definition}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{ForestGreen!70!black}, bodyfont=\normalfont,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=ForestGreen, backgroundcolor=ForestGreen!5,
+    }
+]{thmgreenbox}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{NavyBlue!70!black}, bodyfont=\normalfont,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=NavyBlue, backgroundcolor=NavyBlue!5,
+    }
+]{thmbluebox}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{NavyBlue!70!black}, bodyfont=\normalfont,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=NavyBlue
+    }
+]{thmblueline}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{RawSienna!70!black}, bodyfont=\normalfont,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=RawSienna, backgroundcolor=RawSienna!5,
+    }
+]{thmredbox}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{RawSienna!70!black}, bodyfont=\normalfont,
+    numbered=no,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=RawSienna, backgroundcolor=RawSienna!1,
+    },
+    qed=\qedsymbol
+]{thmproofbox}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{NavyBlue!70!black}, bodyfont=\normalfont,
+    numbered=no,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=NavyBlue, backgroundcolor=NavyBlue!1,
+    },
+]{thmexplanationbox}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{Plum!70!black}, bodyfont=\normalfont,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=Plum, backgroundcolor=Plum!5,
+    }
+]{thmpurplebox}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{Sepia!70!black}, bodyfont=\normalfont,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=Sepia, backgroundcolor=Sepia!5,
+    }
+]{thmsepiabox}
+
+\declaretheoremstyle[
+    headfont=\bfseries\color{ForestGreen!70!black}, bodyfont=\normalfont,
+    mdframed={
+        linewidth=2pt,
+        rightline=false, topline=false, bottomline=false,
+        linecolor=ForestGreen
+    }
+]{thmgreenline}
+
+% \declaretheoremstyle[headfont=\bfseries, bodyfont=\normalfont, mdframed={ nobreak } ]{thmgreenbox}
+% \declaretheoremstyle[headfont=\bfseries, bodyfont=\normalfont, mdframed={ nobreak } ]{thmredbox}
+% \declaretheoremstyle[headfont=\bfseries, bodyfont=\normalfont]{thmbluebox}
+% \declaretheoremstyle[headfont=\bfseries, bodyfont=\normalfont]{thmblueline}
+% \declaretheoremstyle[headfont=\bfseries, bodyfont=\normalfont, numbered=no, mdframed={ rightline=false, topline=false, bottomline=false, }, qed=\qedsymbol ]{thmproofbox}
+% \declaretheoremstyle[headfont=\bfseries, bodyfont=\normalfont, numbered=no, mdframed={ nobreak, rightline=false, topline=false, bottomline=false } ]{thmexplanationbox}
+
+\declaretheorem[style=thmgreenbox, name=Definition]{definition}
+\declaretheorem[style=thmgreenbox, name=Assumption]{assumption}
+\declaretheorem[style=thmbluebox, numbered=no, name=Example]{eg}
+\declaretheorem[style=thmredbox, name=Proposition]{prop}
+\declaretheorem[style=thmredbox, name=Theorem]{theorem}
+\declaretheorem[style=thmredbox, name=Lemma]{lemma}
+\declaretheorem[style=thmredbox, numbered=no, name=Corollary]{corollary}
+\declaretheorem[style=thmpurplebox, name=Problem]{problem}
+\declaretheorem[style=thmsepiabox, numbered=no, name=Fact]{fact}
+\declaretheorem[style=thmgreenline, name=Property]{property}
+
+\declaretheorem[style=thmproofbox, name=Proof]{replacementproof}
+\renewenvironment{proof}[1][\proofname]{\vspace{-10pt}\begin{replacementproof}}{\end{replacementproof}}
+
+
+\declaretheorem[style=thmexplanationbox, name=Proof]{tmpexplanation}
+\newenvironment{explanation}[1][]{\vspace{-10pt}\begin{tmpexplanation}}{\end{tmpexplanation}}
+
+\declaretheorem[style=thmblueline, numbered=no, name=Remark]{remark}
+\declaretheorem[style=thmblueline, numbered=no, name=Note]{note}
+
+\newmdenv[ 
+  topline=false,
+  bottomline=false,
+  skipabove=\topsep,
+  skipbelow=\topsep
+]{sidework}
+
+\title{Homework \#2}
+\author{Clark Miyamoto (cm6627@nyu.edu)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\subsection*{Question 1)} Let $u,u' \overset{iid}{\sim} q$, and consider probability measures $\pi = \delta_u$ and $\pi' = \delta_{u'}$. Show 
+\begin{align}
+	d_{rand}(\pi, \pi')^2 = 2 \sup_{|f|_{\infty} \leq 1} \text{Var}_q[f]
+\end{align}
+
+\paragraph{Solution)} Recall
+\begin{align}
+	d_{rand}(\pi, \pi') = \sup_{|f|_{\infty} \leq 1} \left |  \mathbb E \left[\left( \mathbb E_\pi[f] - \mathbb E_{\pi'}[f] \right)^2 \right]\right  |^{1/2}
+\end{align}
+Since $\pi = \delta_u$, the expectation evaluates to $\mathbb E_\pi[f] = \int f(x) \, \delta_u(x) \, dx = f(u)$
+\begin{align}
+	d_{rand}(\pi, \pi')= \sup_{|f|_{\infty} \leq 1} \left | \mathbb E_{u,u' \sim q} \left[\left( f(u) - f(u' \right)^2 \right]\right|^{1/2}
+\end{align}
+Now notice the expectation inside has a nice  expression
+\begin{align}
+& \mathbb E_{u,u' \sim p}[(f(u) - f(u'))^2]\\
+& = \int (f(u) - f(u'))^2 \, p(u) \, p'(u') \, du \, du'\\
+& = \int [f(u)^2 + f(u')^2 - 2 f(u) f(u')] p(u) p'(u') \, du \, du'\\
+& = \mathbb E_p[f^2] + \mathbb E_p[f^2] - 2 \mathbb E_p[f]^2\\
+& = 2 \, \text{Var}_p[f]
+\end{align}
+So the metric over random probability measures becomes
+\begin{align}
+	\mathcal D := d_{rand}(\pi, \pi') = 2 \sup_{|f|_{\infty} \leq 1}  \sqrt{ \text{Var}_p[f] }
+\end{align}
+Notice $\phi(x) = \sqrt{x}$ is a monotonic function on $x \in [0, \infty)$. I think $\sup$ commutes with monotonic functions (assuming $\sup$ exists). Therefore $\mathcal D = 2 \left( \sup_{|f|_{\infty }} \text{Var}_p[f] \right)^{1/2}$, squaring both sides concludes the proof.
+
+
+\subsection*{Question 3)} 
+The optimization problem
+\begin{align}
+	\psi^* & \in \arg \min_{\psi \in \mathcal K} J^N(\psi) \label{eqn:opt}\\
+	J^N(\psi) & = \frac{1}{2} \sum_{n=1}^N |y^{(n)} - \psi(u^{(n)}) |^2 + \frac{\lambda}{2} \|\psi\|_{\mathcal K}^2
+\end{align}
+where $\mathcal K$ is an RKHS with kernel $c(\cdot, \cdot)$. We defined $\langle f, g \rangle_{\mathcal K} = \sum_{i=1}^\infty \frac{\langle f, \varphi_i\rangle_{L^2} \langle g , \varphi_i \rangle_{L^2}}{\sigma_i}$.  Recall that the resulting function has the form $\psi^*(u) = \sum_{n=1}^N \alpha_n^* c(u, u^{(n)})$. Show the coefficients $\alpha^*$ solve
+\begin{align}
+	\alpha^* & \in \arg \min_{\alpha \in \mathbb R^N} A^N(\alpha)\\
+	A^N(\alpha) & = \frac{1}{2N} \sum_{r=1}^N |y^{(r)} - \sum_{n=1}^N \alpha_n c(u^{(r)}, u^{(n)})|^2 + \frac{\lambda}{2N} \sum_{n,r=1}^N \alpha_n \alpha_r c(u^{(r)} , u^{(n)})
+\end{align}
+Deduce that finding $\alpha^*$ requires an inversion of a Gram matrix evaluate on the data.
+\paragraph{Background}
+\begin{theorem}
+	[Mercer's Theorem] For integral operator $(C \varphi)(u) = \int c(u,u') \varphi(u') \, du'$, with kernel $c$; the kernel can be represent using the orthonormal basis $\left\{ \varphi_i \right\}_{i=1}^\infty$ (w.r.t. $L^2$ norm)
+	\begin{align}
+		c(u,u') = \sum_{i=1}^N \sigma_i \varphi_i(u) \, \varphi_i(u')
+	\end{align}
+\end{theorem}
+
+
+\paragraph{Solution Part 1)} 
+Since the solution to \ref{eqn:opt} has the form $\psi^*(u) = \sum_{n=1}^N \alpha_n^* c(u, u^{(n)})$. So we can plug this into the functional form of the loss function $J^N$.\\
+\\
+The only thing we need to compute is
+\begin{align}
+	\| \psi^*\|_{\mathcal K}^2 & = \langle \psi^*, \psi^* \rangle_{\mathcal K} \\
+	& = \sum_{i=1}^\infty \frac{\langle \psi^*, \varphi_i \rangle_{L^2} \langle \psi^*, \varphi_i \rangle_{L^2}}{\sigma_i}\\
+	&  = \sum_{i=1}^\infty \sum_{n,n'=1}^\infty  \frac{1}{\sigma_i} \alpha_n^* \alpha_{n'}^* \langle c(\cdot, u^{(n)}), \varphi_i \rangle_{L^2} \, \langle c(\cdot, u^{(n')} , \varphi_i\rangle_{L^2}
+\end{align}
+From Mercer's theorem, $c(u, u') = \sum_{i=1}^\infty \sigma_i \varphi_i (u) \varphi_i(u')$, so the inner product $\langle c(\cdot, x), \varphi_k\rangle_{L^2} = \sigma_k \varphi_k(x)$.
+\begin{align}
+	\| \psi^*\|_{\mathcal K}^2 & = \sum_{i=1}^\infty \sum_{n,n'=1}^N  \frac{1}{\sigma_i} \alpha_n^* \alpha_{n'}^* \sigma_i \varphi_i(u^{(n)}) \, \sigma_i \varphi_i(u^{(n')})\\
+	& = \sum_{n,n'=1}^N \alpha_n^* \alpha_{n'}^*\sum_{i=1}^\infty \sigma_i \varphi_i(u^{(n)}) \varphi_i(u^{(n')})\\
+	& = \sum_{n=1}^N\sum_{n'=1}^N \alpha_n^* \alpha_{n'}^* \, c(u^{(n)}, u^{(n')})
+\end{align}
+
+\paragraph{Solution Part 2)} 
+
+
+
+
+
+
+
+
+\newpage
+\appendix
+\section*{Hilbert Spaces}
+A Hilbert Space $\mathcal H$ is an vector space equiped with an inner product $\langle \cdot, \cdot \rangle : \mathcal H \times \mathcal H \to \mathbb R$. In particular the inner product should obey the following; let $x,y \in \mathcal H$
+\begin{enumerate}
+	\item $\langle y, x\rangle = \overline{\langle x, y \rangle}$
+	\item Linear: $\langle ax_1 + bx_2, y\rangle = a \langle x_1 ,y \rangle + b \langle x_2, y\rangle$
+	\item Positive definite: $\langle x, x \rangle \geq 0$ (if $x = 0$, then $\langle x, x \rangle = 0$.)
+\end{enumerate} 
+This inner product implicitly defines a norm $\|x \|_{\mathcal H} = \sqrt{\langle x, x \rangle}$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

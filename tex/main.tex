@@ -609,23 +609,260 @@ This is a true metric (always $\geq 0$, $=0$ if and only if arguments are equal,
 \end{remark}
 
 
+\subsection{Measures over Probability Measures}
+\begin{definition}
+	[Kernel] Let $D \subseteq \mathbb R^d$. A kernel is a map $c : D \to  D \to \mathbb R$. It is symmetric
+\end{definition}
+\begin{definition}
+	[Gram Matrix] IF for all $n \in \mathbb N$ and $u \in D^{\otimes^N}$ 
+\end{definition}
+\begin{theorem}
+	[Mercer] Let $D \subseteq \mathbb R^d$ be a compact 
+\end{theorem}
+
+\subsection{Metrics over Random Probability Measures}
+Sometimes it's useful to consider random variables which take values in the space of probability measures. Consider a function $\pi : \Omega \to \mathcal P(\mathbb R^d)$ for a probability space $(\Omega, \mathcal B, \mathbb P)$. For $\omega \in \Omega$, let $\pi = \pi(\omega)$; we say this is an element of the space of random probability measures.
+
+\begin{definition}[Metric on Random Measuresj]
+	Let $\pi, \pi' : \Omega \to \mathcal P(\mathbb R^d)$. Then
+	\begin{align}
+		d_{rand}(\pi, \pi') = \sup_{|f|_{\infty} < 1} \left | \mathbb E \left[  \left( \mathbb E_\pi[f] - \mathbb E_{\pi'}[f] \right)^2 \right] \right |^{1/2}
+	\end{align}
+	where $\mathbb E$ is taken over the randomness sampling probability measures.
+\end{definition}
+\begin{remark}
+	When $\pi,\pi'$ are not random, $d_{rand}$ reduces to twice the TV distance.
+\end{remark}
+\begin{proof}
+	Let the condition $\delta := (|f|_{\infty} \leq 1)$. Our metric on random measures is
+	\begin{align}
+		d_{rand}(\pi, \pi') = \sup_{\delta} \left | \mathbb E_{\pi}[f] - \mathbb E_{\pi'}[f]  \right |
+	\end{align}
+	Since $\pi, \pi'$ are assumed to not be random measures, we don't have the outer expectation.
+	\begin{align}
+		& = \sup_{\delta} \left | \int_{\mathbb R^d \times \mathbb R^d} [f(x) - f(x') ] \pi(x) \, \pi(x') \, dx \, dx'\right |
+	\end{align}
+\end{proof}
 
 
 
+\section{Supervised Learning}
+We now move onto supervised learning, which is a machine learning technique. \\
+\\
+First let's state our \textbf{data asssumptions}. In this case, I'll say we're given a dataset $\left\{ u^{(n)}, y^{(n)} \right\}_{i=1}^N$ drawn iid from $\gamma \in \mathcal P(\mathbb R^d \times \mathbb R)$ defined by the coupling: $u \sim \Upsilon$ and $\eta \sim \mathcal N(0, \mathbb I)$ (s.t. $u \perp \eta$). The data generating process is
+\begin{align}
+	y = \psi^\dagger(u) + \sqrt{\lambda} \eta
+\end{align}
+We'll call the .
+
+The goal is to approximate $\psi^\dagger$ from data.\\
+\\
+How can we approximate $\psi^\dagger$? In these lectures we'll inspect a couple \textbf{approximation classes}
+\begin{itemize}
+	\item Gaussian processes: Tractable to inspect theoretically. 
+	\item Random features
+	\item Neural networks: Difficult to inspect theoretically / get guarentees.
+\end{itemize}
+but there are many more!\\
+\\
+Consider a parametric function $\psi : \mathbb R^d \times \Theta \to \mathbb R$ (s.t. $\Theta \subseteq \mathbb R^p$). Consider the population loss (assumes you have access to infinite data points)
+\begin{align}
+	J(\theta) & = \frac{1}{2} \mathbb E_{(U,Y) \sim \gamma} [|y - \psi(y ; \theta)|^2] & \text{Population loss}\\
+	\theta^* & \in \arg \min_{\theta \in \Theta} J(\theta) & \text{Population objective}
+\end{align}
+Now we can inspect the loss function we have access to. Consider the empirical measure $\gamma^N = \frac{1}{N} \sum_{n=1}^N \delta_{(u^{(n)}, y^{(n)})} \in \mathcal P((\mathbb R^d \times \mathbb R)^{\otimes N})$. Note: $d_{rand} (\gamma^N, \gamma) = \frac{1}{\sqrt N}$ (monte carlo approximation). Then we have access to the empirical loss function
+\begin{align}
+	J^N(\theta) & = \frac{1}{2} \mathbb E_{(u,y) \sim \gamma^N} |y - \psi(u; \theta)|^2\\
+	& = \frac{1}{2} \sum_{n=1}^N |y^{(n)} - \psi(u^{(n)}; \theta)|^2\\
+	\theta & \in \arg \min_{\theta \in \Theta} J^N(\theta)
+\end{align}
+
+\subsection{Reproducing Kernel Hilbert Space (RKHS)}
+\begin{definition}
+	[Kernel] Let $D \subseteq \mathbb R^d$. A kernel $c : D \times D \to \mathbb R$ is symmetric if $c(u, u') = c(u', u)$ $\forall u, u' \in D$.
+\end{definition}
+Let $N \in \mathbb N$ and $U = \left\{ u^{(n)} \right\}_{n=1}^N$
+\begin{definition}
+	[Gram Matrix] Consider a $\tilde C \in \mathbb R^{N \times N}$ s.t. $\tilde C_{ij} = c(u^{(i)}, u^{(j)})$. If $\forall n \in \mathbb N$ and $U \in D^{\otimes^N}$, $C \succeq 0$ then kernel is resp. strictly positive definite.
+\end{definition}
+
+\begin{theorem}
+	[Mercer] Let $D \subseteq \mathbb R^d$ be a compact. Let $c: D \times D \to \mathbb R$ is symmetric, and positive definite, and continuous. Then define $C : L^2(D) \to L^2 (D)$ as
+	\begin{align}
+		(C \varphi)(u) = \int_D c(u,u') \varphi(u') \, du'
+	\end{align}
+	Then $C$ has eigenpairs $(\sigma_i, \varphi_i)_{i=1}^\infty$
+	\begin{itemize}
+		\item Orthonormal basis: $\left\{ \varphi_i \right\}$ forms an orthonormal basis for $L^2$
+		\item Finite energy: $\sum_{i=1}^\infty \sigma_i < \infty$
+		\item Eigenbasis expansion: $c(u,u') = \sum_{i=1}^\infty \sigma_i \varphi_i(u) \varphi_i(u')$ 
+	\end{itemize}
+	This should remind you of a spectral theorem type of theorem.
+\end{theorem}
+
+\begin{definition}[RKHS]
+	A Hilbert space $\mathcal H$ of function $f: D \to \mathbb R$ is a RKHS if $\exists c : D \times D \to \mathbb R$ with $c(u, \cdot) \in \mathcal H$ if $\forall u \in D$ and $\forall f \in \mathcal H$ we have the reproducing property
+	\begin{align}
+		f(u) = \langle f, c(u, \cdot)\rangle_{\mathcal H}
+	\end{align}
+\end{definition}
+This connects a point-wise evaluation of a function, to a construction of a function (that is in a Hilbert Space).
+
+\begin{eg}
+	[Counter Example] Consider
+	\begin{align}
+		\int f(u') \delta(u-u') du' = f(u)
+	\end{align}
+	We'd like to say ``$\langle f, \delta_u \rangle_{L^2} = f(u)$", but $\delta_u \notin L^2$ but rather is in the space of distributions. 
+\end{eg}
+So instead let's define an inner product $\langle f, g \rangle_{\mathcal H} = \langle C^{-1/2} f , C^{-1/2} g\rangle_{L^2} = \langle f, C^{-1} g\rangle$, and define the $(C^{-1} c)(u, \cdot) = \delta_u$. 
+\begin{eg}
+	Let $C^{-1} = - \frac{d^2}{dx^2}$ by the covariance operator of a Brownian bridge then $c(\cdot, u)$ is the associated Greens function.
+\end{eg}
+
+\begin{definition}[Modified Function Space, Inner Product \& Norm]
+	Under the Mercer conditions. Let $\mathcal K \subset L^2$. Define a weighted $L^2$ inner product
+	\begin{align}
+		\langle f, g \rangle_{\mathcal K} = \sum_{i=1}^\infty \frac{1}{\sigma_i} \langle f , \varphi_i \rangle_{L^2} \langle g, \varphi_i \rangle_{L^2}
+	\end{align}
+	For the norm $\|f\|_{\mathcal K} = \langle f, f\rangle_{\mathcal K}$ (induced by the inner product) to be finite, we need $\mathcal K := \left\{ f \in L^2(D) : \| f\|_{\mathcal K}^2 < \infty \right\} \subset L^2(D)$.
+\end{definition}
+\begin{theorem}[RKHS]
+	For $f \in \mathcal K$ and $u \in D$
+	\begin{align}
+		\langle f , c(u, \cdot) \rangle_{\mathcal K} = f(u)
+	\end{align}
+\end{theorem}
+\begin{proof}
+	First expand $c$ using Mercer theorem
+	\begin{align}
+		\langle c(u, \cdot,), \varphi_i\rangle_{L^2} & = \sum_{j=1}^\infty \sigma_j \varphi_j(u) \underbrace{\langle \varphi_j, \varphi_i\rangle_{L^2}}_{=\delta_{ji}}\\
+		& = \sigma_i \varphi_i(u)
+	\end{align}
+	Notice we have an additional $\sigma_i$, so if instead we used the modified inner product
+	\begin{align}
+		\langle c(u, \cdot), f\rangle_{\mathcal K} & = \sum_{i=1}^\infty \frac{1}{\sigma_i} \langle f, \varphi_i \rangle_{L^2} \langle c(u, \cdot) , \varphi_i\rangle_{L^2}\\
+		& = \sum_{i=1}^\infty \langle f , \varphi_i \rangle_{L^2} \varphi_i(u)\\
+		& = f(u)
+	\end{align}
+	In the 2nd step, I use the previous result; in the 3rd step I recall this is just the eigenbasis expansion of $f$.
+\end{proof}
+The terminology goes like: First pick a kernel $c$, using the Mercer theorem we get the eigensystem $(\sigma_i, \psi_i)_{i=1}^\infty$, which then can be used to define the inner product $\langle \cdot, \cdot \rangle_{\mathcal K}$ which defines a Hilbert space.
+
+\begin{eg}
+	[Squared Exponential Kernel] Let $D \subset \mathbb R^d$ be bounded \& open. Choose the kernel to be a Gaussian (in approximation theory, these are called radial basis functions)
+	\begin{align}
+		c(u, u') = \exp \left( - \frac{1}{2\sigma^2} |u - u'|^2 \right)
+	\end{align}
+	If $f \in \textsf{RKHS}$ then $f \in C^\infty(D; \mathbb R)$.
+\end{eg}
+\begin{theorem}
+	Let $\mathcal K$ be a RKHS of a squared exponential kernel, $D \subset \mathbb R^d$ bounded \& open. Then for $\psi^\dagger \in C(D; \mathbb R)$. Then $\forall \epsilon > 0$, $\exists \psi \in \mathcal K$ s.t.
+	\begin{align}
+		\sup_{u \in D} |\psi^\dagger - \psi(u)| < \epsilon
+	\end{align}
+\end{theorem}
+
+Now we can go back to the supervised learning problem. Consider the same problem but modified with a regularizer in function space
+\begin{align}
+	J^N(\psi) & = \frac{1}{2N} \sum_{n=1}^N |y^{(n)} - \psi(u^{(n)} ; \theta)|^2 + \frac{\lambda}{2N} \| \psi\|_{\mathcal K}^2\\
+	\psi^* & \in \arg \inf_{\psi \in \textsf{RKHS}} J^N(\psi)
+\end{align}
+Somehow we've gotten worse. Now we're optimizing over infinite dimensions. However, a remarkable fact, this optimization problem is actually finite dimensional.
+\begin{theorem}
+	[Representer Theorem] 
+	\begin{align}
+		\psi^* \in \textsf{span} \left\{ c(\cdot; u^{(n)})  \right\}_{n=1}^N
+	\end{align}
+\end{theorem}
+So now we can parameterize the space of solutions as
+\begin{align}
+	\psi(u; \alpha) = \sum_{n=1}^N \alpha_n c(u, u^{(n)})
+\end{align}
+and now just optimize on $\alpha_n$.
 
 
+\subsection{Random Feature Regression} Consider the probability space $(\Omega, \mathcal F, q)$, meaning $q \in \mathcal P(\Omega)$. We'll look at random functions $\varphi: \mathcal D \times \Omega \to \mathbb R$. Note $\theta_i \in \Omega$ is the RNG seed space, so we can sample functions by $\varphi_i := \varphi(\cdot, \theta_i)$ where $\theta_i \sim q_i$. 
+\begin{eg}
+	[Random Fourier Feature] Let $\mathcal D = \mathbb R^d$. Consider
+	\begin{align}
+		\varphi(u, \theta) = \cos(\langle w , u\rangle + b), \quad \theta = \left\{ w, b \right\} 
+	\end{align}
+\end{eg}
+A couple assumptions moving forward
+\begin{enumerate}
+	\item $\varphi_i \in C(\bar D ; \mathbb R)$ (for all $i \in [m]$)
+	\item $\left\{ \varphi_i \right\}_{i=1}^m$ are linearly independent.
+\end{enumerate}
+Our objective is to find
+\begin{align}
+	\psi = (u ; \beta) = \frac{1}{\sqrt{m}} \sum_{i=1}^m \beta_i \varphi_i(u) \label{eqn:RandomFeature_Ansatz}
+\end{align}  
+where $\varphi_i$ are the randomized features, and $\beta_i$ are the parameters of the model.
+\paragraph{Reproducing Kernel Hilbert Space}
+Let $\mathcal K_m = \textsf{span} \left\{ \varphi_i \right\}_{i=1}^m$, and $c_m(u, u') = \frac{1}{m} \sum_{j=1}^m \varphi_j(u) \varphi_j(u')$. 
+\begin{sidework}
+	Looking ahead: Notice that taking the limit $m \to \infty$, and since the $\varphi_j$ are iid. You might expect $ c_m(u,u') \to c(u,u') = \mathbb E_{\theta \sim q}[\varphi(u; \theta) \varphi(u', \theta)]$.
+\end{sidework}
+\begin{remark}
+	Under the assumptions, the equation $\ref{eqn:RandomFeature_Ansatz}$ defines an isomorphism between $\mathcal K_m \leftrightarrow \mathbb R^m$. Given $\psi \in \mathcal K_m$ we write $\beta^\psi \in \mathbb R^m$.
+\end{remark}
+So now we can construct a norm using the isomorphism
+\begin{definition}
+	Inner product $\langle f, g \rangle_{\mathcal K_m} = \langle \beta^f, \beta^g\rangle_{\mathbb R^m}$
+\end{definition}
+\begin{remark}
+	$\|f\|_{\mathcal K_m}^2 = |\beta^f|^2$ (where $|\cdot|$ is the Euclidian norm).
+\end{remark}
+\begin{theorem}
+	$(\mathcal K_m, \langle \cdot, \cdot \rangle_{\mathcal K_m})$ is a RKHS with kernel $c_m$ given by
+	\begin{align}
+		c_m(u,u') = \frac{1}{m} \sum_{j=1}^m \varphi_j(u) \varphi_j(u')
+	\end{align}
+\end{theorem}
+Recall that $\mathcal K$ is an RKHS if (1) $c(u, \cdot) \in \textsf{RKHS}$ for all $u \in \mathcal D$, (2) $\langle f, c(u, \cdot) \rangle_{\mathcal K} = f(u)$.
+\begin{proof}
+	Fix $u \in \mathcal D$. By assumption (1), we can evaluate the functions pointwise
+	\begin{align}
+		c_m(u, \cdot) & = \frac{1}{m} \sum_{j=1}^m \varphi_j(u) \varphi_j(\cdot )\\
+		& = \frac{1}{\sqrt{m}} \sum_{j=1}^m \underbrace{\frac{1}{\sqrt{m}} \varphi_j(u)}_{\beta_j^{c_m(u, \cdot)}} \varphi_j(\cdot)\\
+		& = \frac{1}{\sqrt{m}} \sum_{j=1}^m \beta_j^{c_m(u, \cdot)} \varphi_j(u) \in \textsf{span}\left\{ \varphi_j \right\}_{j=1}^m
+	\end{align}
+	To be clean $\beta^{c_m(u, \cdot)} = \frac{1}{\sqrt{m}} (\varphi_1(u), ..., \varphi_m(u))$. This proves the first property, to prove the second property
+	\begin{align}
+		\langle f, c(u, \cdot) \rangle_{\mathcal K}& = \langle \beta^f, \beta^{c(u, \cdot)} \rangle_{\mathbb R^m}\\
+		& = \frac{1}{\sqrt{m}} \sum_{j=1}^m \beta_j^f \varphi_j(u)\\
+		& = f(u)
+	\end{align}
+\end{proof}
 
+\begin{align}
+	J_m(\beta) & = \frac{\lambda}{2N} | \beta|^2 + \frac{1}{2N} \sum_{n=1}^N \left| y^{(n)} - \frac{1}{\sqrt{m}} \sum_{j=1}^m \beta_j \varphi_j(u^{(n)}) \right|^2\\
+	\beta^* & \in \arg \min_{\beta \in \mathbb R^m} J_m(\beta)
+\end{align}
 
+\section{Unsupervised Learning}
+\paragraph{Setup} You are given a dataset $\textsf{U} = \left\{ u^{(n)} \right\}_{n=1}^N$ s.t. $u^{(n)} \overset{iid}{\sim} \gamma$. Denote $\gamma^N = \frac{1}{N} \sum_{n=1}^N \delta_{u^{(n)}}$, notice $d_{rand}(\gamma^N , \gamma) = 1/\sqrt{N}$. Your objective is to do generative modeling; find $q(\cdot ; \theta^*) \in \mathcal P(\mathbb R^d)$ such that $q(\cdot ; \theta^*) \approx \gamma$. 
 
-
-
-
-
-
-
-
-
-
+\paragraph{Method} Use the loss function
+\begin{align}
+	F(\theta) & = \textsf{KL}(\gamma \| q(\cdot; \theta)), \quad \theta^* \in \arg \min_{\theta \in \Theta} F(\theta)
+\end{align}
+However, there seems to be a problem, because we only have access to $\gamma^N = \frac{1}{N} \sum_{n=1}^N \delta_{u^{(n)}}$. So the $\textsf{KL}$ is ill-defined, and additionally there's a question about generalization; how can we prevent just exactly memorizing the samples $\left\{ u^{(n)} \right\}_n$. Let's inspect the loss function closer
+\begin{align}
+	& = \mathbb E_{u \sim \gamma}[\log \gamma] - \mathbb E_{u \sim \gamma}[\log q(\cdot; \theta)]\\
+	& = C - \mathbb E_{u \sim \gamma}[\log q(\cdot; \theta)]\\
+	& = C + \bar{\textsf{LS}}[q(\cdot ; \theta), \gamma]
+\end{align}
+Since we're training, we only need access to derivatives of $F(\theta)$, so just use 
+\begin{align}
+	J(\theta) & = - \mathbb E_{\gamma} [\log q(\cdot; \theta)]\\
+	J^N(\theta) & = - \mathbb E_{\gamma^N} [\log q(\cdot;  \theta)] \\
+	& = - \frac{1}{N} \sum_{n=1}^N \log q(u^{(n)} ; \theta)
+\end{align}
+\begin{fact}
+	Minimizing the KL is equivalent to maximizing the Likelihood.
+\end{fact}
 
 
 
